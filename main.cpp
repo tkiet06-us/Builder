@@ -1,0 +1,356 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <stdexcept>
+
+using namespace std;
+
+// "Slide code 1"
+
+// 1. PRODUCT (Sản phẩm đầu ra)
+// Là một sản phẩm cụ thể
+
+// "nếu được có thể cho chung class House với Construction Report chung 1 slide"
+// "Constructor dài quá thì m ghi ví dụ như "House(...)" là được"
+
+// A. Ngôi nhà thật 
+class House {
+private:
+    string foundationType;
+    string wallType;
+    string floorType;
+
+    int rooms;
+    int windows;
+
+    string roofType;
+
+    bool hasPool;
+    bool hasGarden;
+    bool hasGarage;
+
+    friend class HouseBuilder;
+
+    House(string foundation, string wall, string floor, int room, int window, string roof, bool pool, bool garden, bool garage) :
+        foundationType(foundation), wallType(wall), floorType(floor), rooms(room), windows(window), roofType(roof), hasPool(pool), hasGarden(garden), hasGarage(garage) {
+    }
+
+public:
+    void showHouse() {
+        cout << "   [Ket qua: Ban da nhan duoc ngoi nha]:" << endl;
+        cout << "    - Da hoan thien: Do mong loai " << foundationType << endl;
+        cout << "    - Da hoan thien: Tuong loai bang " << wallType << endl;
+        cout << "    - Da hoan thien: San nha " << floorType << endl;
+        cout << "    - Da hoan thien: Xay " << rooms << " can phong" << endl;
+        cout << "    - Da hoan thien: Lap dat " << windows << " cua so" << endl;
+        cout << "    - Da hoan thien: Lop mai " << roofType << endl;
+        if (hasPool) {
+            cout << "    - Da hoan thien: Ho boi" << endl;
+        }
+        if (hasGarden) {
+            cout << "    - Da hoan thien: Phan dat cho khu vuon" << endl;
+        }
+        if (hasGarage) {
+            cout << "    - Da hoan thien: Garage cho xe hoi" << endl;
+        }
+        cout << "    -> San sang ban giao chia khoa nha!" << endl;
+    }
+};
+
+// B.Báo cáo thi công (Construction Report)
+class ConstructionReport {
+private:
+    int tonsOfCement;
+    int tonsOfMetal;
+    int numBricks;
+    int numTiles;
+    int m3OfWood;
+    int m2OfGlass;
+
+    friend class EstimatorBuilder;
+
+    ConstructionReport(int cement, int metal, int brick, int tile, int wood, int glass) :
+        tonsOfCement(cement), tonsOfMetal(metal), numBricks(brick), numTiles(tile), m3OfWood(wood), m2OfGlass(glass) {
+    }
+
+public:
+    void showReport() {
+        cout << "   [Ket qua: Bao cao du toan vat lieu]:" << endl;
+        cout << "    - Xi mang da dung: " << tonsOfCement << " tan" << endl;
+        cout << "    - Kim loai da dung: " << tonsOfMetal << " tan" << endl;
+        cout << "    - Gach da xay: " << numBricks << " vien" << endl;
+        cout << "    - Gach san da lat: " << numTiles << " vien" << endl;
+        cout << "    - Luong go da dong: " << m3OfWood << " m3" << endl;
+        cout << "    - Dien tich kinh da dung: " << m2OfGlass << " m2" << endl;
+        cout << "    -> Bao cao thong ke nguyen vat lieu hoan tat!" << endl;
+    }
+};
+
+// "Slide code 2"
+
+// 2. BUILDER INTERFACE (Giao diện builder)
+// Cung cấp tất cả bước chung xây dựng nên 1 product
+
+class Builder {
+public:
+    // loại bỏ sản phẩm cũ trước khi tạo sản phẩm mới
+    virtual void Reset() = 0;
+
+    // Các bước xây nhà
+    // "chỉ cần ghi chú chức năng của 3 hàm build đầu là được"
+    virtual void buildFoundation() = 0; // đổ móng
+    virtual void buildWalls() = 0;      // xây tường
+    virtual void buildFloor() = 0;      // lát sàn
+    virtual void buildRooms() = 0;
+    virtual void buildWindows() = 0;
+    virtual void buildRoof() = 0;
+    virtual void buildPool() = 0;
+    virtual void buildGarden() = 0;
+    virtual void buildGarage() = 0;
+};
+
+// "Slide code 3"
+
+// 3. CONCRETE BUILDER (Các đội thợ cụ thể)
+
+// "nếu được có thể cho chung class HouseBuilder với EstimatorBuilder chung 1 slide"
+// "Nhiều hàm build quá thì lấy 3 cái làm mẫu thôi"
+
+// ĐỘI 1: Đội Thợ Hồ (HouseBuilder) -> Tạo ra House
+class HouseBuilder : public Builder {
+private:
+    string foundationType;
+    string wallType;
+    string floorType;
+
+    int rooms;
+    int windows;
+
+    string roofType;
+
+    bool hasPool;
+    bool hasGarden;
+    bool hasGarage;
+
+public:
+    HouseBuilder() : rooms(0), windows(0), hasPool(false), hasGarden(false), hasGarage(false) {}
+
+    void Reset() override {
+        foundationType = "";
+        wallType = "";
+        floorType = "";
+        rooms = 0;
+        windows = 0;
+        roofType = "";
+        hasPool = false;
+        hasGarden = false;
+        hasGarage = false;
+    }
+
+    void buildFoundation() override {
+        foundationType = "don";
+    }
+
+    void buildWalls() override {
+        if (foundationType == "") {
+            throw invalid_argument("Nha chua duoc do mong");
+        }
+        wallType = "gach";
+    }
+
+    void buildFloor() override {
+        if (foundationType == "") {
+            throw invalid_argument("Nha chua duoc do mong");
+        }
+        floorType = "go";
+    }
+
+    void buildRooms() override {
+        if (foundationType == "") {
+            throw invalid_argument("Nha chua duoc do mong");
+        }
+        if (wallType == "") {
+            throw invalid_argument("Nha chua duoc dung tuong");
+        }
+        rooms = 4;
+    }
+
+    void buildWindows() override {
+        if (foundationType == "") {
+            throw invalid_argument("Nha chua duoc do mong");
+        }
+        if (wallType == "") {
+            throw invalid_argument("Nha chua duoc dung tuong");
+        }
+        windows = 8;
+    }
+
+    void buildRoof() override {
+        if (foundationType == "") {
+            throw invalid_argument("Nha chua duoc do mong");
+        }
+        if (wallType == "") {
+            throw invalid_argument("Nha chua duoc dung tuong");
+        }
+        roofType = "ngoi";
+    }
+
+    void buildPool() override {
+        hasPool = true;
+    }
+
+    void buildGarden() override {
+        hasGarden = true;
+    }
+
+    void buildGarage() override {
+        hasGarage = true;
+    }
+
+    // Hàm trả hàng riêng của đội thợ hồ: Trả về House
+    House build() {
+        return House(foundationType, wallType, floorType, rooms, windows, roofType, hasPool, hasGarden, hasGarage);
+    }
+};
+
+// ĐỘI 2: Đội Dự Toán (EstimatorBuilder) -> Tạo ra ConstructionReport
+// Đội này không xây, chỉ đếm số lượng nguyên vật liệu
+class EstimatorBuilder : public Builder {
+private:
+    int tonsOfCement;
+    int tonsOfMetal;
+    int numBricks;
+    int numTiles;
+    int m3OfWood;
+    int m2OfGlass;
+
+public:
+    EstimatorBuilder() : tonsOfCement(0), tonsOfMetal(0), numBricks(0), numTiles(0), m3OfWood(0), m2OfGlass(0) {}
+
+    void Reset() override {
+        tonsOfCement = 0;
+        tonsOfMetal = 0;
+        numBricks = 0;
+        numTiles = 0;
+        m3OfWood = 0;
+        m2OfGlass = 0;
+    }
+
+    void buildFoundation() override {
+        tonsOfCement += 2;
+        tonsOfMetal += 2;
+    }
+
+    void buildWalls() override {
+        tonsOfCement += 2;
+        numBricks += 5000;
+    }
+
+    void buildFloor() override {
+        tonsOfCement += 2;
+        numTiles += 500;
+        m3OfWood += 100;
+    }
+
+    void buildRooms() override {
+        tonsOfCement += 5;
+        numBricks += 5000;
+    }
+
+    void buildWindows() override {
+        tonsOfMetal += 1;
+        m2OfGlass += 1000;
+    }
+
+    void buildRoof() override {
+        numBricks += 1000;
+        m3OfWood += 50;
+    }
+
+    void buildPool() override {
+        numTiles += 500;
+        tonsOfCement += 10;
+    }
+
+    void buildGarden() override {
+        m3OfWood += 10;
+        tonsOfMetal += 1;
+    }
+
+    void buildGarage() override {
+        tonsOfCement += 10;
+        tonsOfMetal += 5;
+        numBricks += 2000;
+    }
+
+    // Hàm trả hàng riêng của đội dự toán: Trả về Construction Report
+    ConstructionReport build() {
+        return ConstructionReport(tonsOfCement, tonsOfMetal, numBricks, numTiles, m3OfWood, m2OfGlass);
+    }
+};
+
+
+// 4. DIRECTOR (Cai thầu / Quản lý dự án)
+// "Slide code 4"
+// Người này nắm quy trình chuẩn để xây một căn biệt thự.
+// Không quan tâm đội thợ bên dưới là thợ hồ hay kế toán.
+
+class ConstructionManager {
+public:
+    void ConstructVilla(Builder& builder) {
+        builder.Reset();
+
+        cout << "Cai thau: Bat dau quy trinh xay Biet Thu..." << endl;
+
+        builder.buildFoundation();
+        builder.buildWalls();
+        builder.buildFloor();
+        builder.buildRooms();
+        builder.buildWindows();
+        builder.buildRoof();
+        builder.buildPool();
+        builder.buildGarden();
+        builder.buildGarage();
+
+        cout << "Cai thau: Quy trinh hoan tat. Toi di ve day!" << endl;
+    }
+};
+
+// 5. CLIENT (Chủ nhà)
+// "Slide code 5"
+int main() {
+    // Thuê ông Cai thầu (Director)
+    ConstructionManager manager;
+
+    // Xây một căn nhà do ông thầu chỉ đạo
+    cout << "KICH BAN A: Muon xay biet thu de o (Thue doi Tho Ho)" << endl;
+
+    try {
+        HouseBuilder workerTeam;
+        manager.ConstructVilla(workerTeam);
+        House myDreamHouse = workerTeam.build();
+
+        myDreamHouse.showHouse();
+    }
+    catch (const exception& e) {
+        cout << "KE HOACH THAT BAI: " << e.what() << endl;
+    }
+
+    cout << endl;
+
+    // Lập một bảng báo cáo do cùng một ông thầu đó hướng dẫn, cùng 1 quy trình làm việc
+    cout << "KICH BAN B: Muon bao gia du toan (Thue doi Ke toan)" << endl;
+
+    try {
+        EstimatorBuilder accountantTeam;
+        manager.ConstructVilla(accountantTeam);
+        ConstructionReport report = accountantTeam.build();
+
+        report.showReport();
+    }
+    catch (const exception& e) {
+        cout << "KE HOACH THAT BAI: " << e.what() << endl;
+    }
+
+    return 0;
+}
