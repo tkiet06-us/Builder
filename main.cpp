@@ -153,44 +153,44 @@ public:
 
     void buildWalls() override {
         if (foundationType == "") {
-            throw invalid_argument("Nha chua duoc do mong");
+            throw logic_error("Nha chua duoc do mong");
         }
         wallType = "gach";
     }
 
     void buildFloor() override {
         if (foundationType == "") {
-            throw invalid_argument("Nha chua duoc do mong");
+            throw logic_error("Nha chua duoc do mong");
         }
         floorType = "go";
     }
 
     void buildRooms() override {
         if (foundationType == "") {
-            throw invalid_argument("Nha chua duoc do mong");
+            throw logic_error("Nha chua duoc do mong");
         }
         if (wallType == "") {
-            throw invalid_argument("Nha chua duoc dung tuong");
+            throw logic_error("Nha chua duoc dung tuong");
         }
         rooms = 4;
     }
 
     void buildWindows() override {
         if (foundationType == "") {
-            throw invalid_argument("Nha chua duoc do mong");
+            throw logic_error("Nha chua duoc do mong");
         }
         if (wallType == "") {
-            throw invalid_argument("Nha chua duoc dung tuong");
+            throw logic_error("Nha chua duoc dung tuong");
         }
         windows = 8;
     }
 
     void buildRoof() override {
         if (foundationType == "") {
-            throw invalid_argument("Nha chua duoc do mong");
+            throw logic_error("Nha chua duoc do mong");
         }
         if (wallType == "") {
-            throw invalid_argument("Nha chua duoc dung tuong");
+            throw logic_error("Nha chua duoc dung tuong");
         }
         roofType = "ngoi";
     }
