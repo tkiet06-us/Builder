@@ -26,13 +26,11 @@ private:
     int rooms;
     int windows;
 
-    #pragma region ...
     string roofType;
 
     bool hasPool;
     bool hasGarden;
     bool hasGarage;
-    #pragma endregion
 
     friend class HouseBuilder;
 
