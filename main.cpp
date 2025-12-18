@@ -14,6 +14,9 @@ using namespace std;
 // "Constructor dài quá thì m ghi ví dụ như "House(...)" là được"
 
 // A. Ngôi nhà thật 
+
+
+
 class House {
 private:
     string foundationType;
@@ -23,11 +26,13 @@ private:
     int rooms;
     int windows;
 
+    #pragma region ...
     string roofType;
 
     bool hasPool;
     bool hasGarden;
     bool hasGarage;
+    #pragma endregion
 
     friend class HouseBuilder;
 
@@ -37,6 +42,7 @@ private:
 
 public:
     void showHouse() {
+#pragma 
         cout << "   [Ket qua: Ban da nhan duoc ngoi nha]:" << endl;
         cout << "    - Da hoan thien: Do mong loai " << foundationType << endl;
         cout << "    - Da hoan thien: Tuong loai bang " << wallType << endl;
@@ -53,7 +59,7 @@ public:
         if (hasGarage) {
             cout << "    - Da hoan thien: Garage cho xe hoi" << endl;
         }
-        cout << "    -> San sang ban giao chia khoa nha!" << endl;
+        cout << "    -> San sang don do dac vao nha o!" << endl;
     }
 };
 
@@ -94,19 +100,19 @@ public:
 class Builder {
 public:
     // loại bỏ sản phẩm cũ trước khi tạo sản phẩm mới
-    virtual void Reset() = 0;
+    virtual Builder& Reset() = 0;
 
     // Các bước xây nhà
     // "chỉ cần ghi chú chức năng của 3 hàm build đầu là được"
-    virtual void buildFoundation() = 0; // đổ móng
-    virtual void buildWalls() = 0;      // xây tường
-    virtual void buildFloor() = 0;      // lát sàn
-    virtual void buildRooms() = 0;
-    virtual void buildWindows() = 0;
-    virtual void buildRoof() = 0;
-    virtual void buildPool() = 0;
-    virtual void buildGarden() = 0;
-    virtual void buildGarage() = 0;
+    virtual Builder& buildFoundation() = 0; // đổ móng
+    virtual Builder& buildWalls() = 0;      // xây tường
+    virtual Builder& buildFloor() = 0;      // lát sàn
+    virtual Builder& buildRooms() = 0;
+    virtual Builder& buildWindows() = 0;
+    virtual Builder& buildRoof() = 0;
+    virtual Builder& buildPool() = 0;
+    virtual Builder& buildGarden() = 0;
+    virtual Builder& buildGarage() = 0;
 };
 
 // "Slide code 3"
@@ -135,7 +141,7 @@ private:
 public:
     HouseBuilder() : rooms(0), windows(0), hasPool(false), hasGarden(false), hasGarage(false) {}
 
-    void Reset() override {
+    HouseBuilder& Reset() override {
         foundationType = "";
         wallType = "";
         floorType = "";
@@ -145,27 +151,31 @@ public:
         hasPool = false;
         hasGarden = false;
         hasGarage = false;
+        return *this;
     }
 
-    void buildFoundation() override {
+    HouseBuilder& buildFoundation() override {
         foundationType = "don";
+        return *this;
     }
 
-    void buildWalls() override {
+    HouseBuilder& buildWalls() override {
         if (foundationType == "") {
             throw logic_error("Nha chua duoc do mong");
         }
         wallType = "gach";
+        return *this;
     }
 
-    void buildFloor() override {
+    HouseBuilder& buildFloor() override {
         if (foundationType == "") {
             throw logic_error("Nha chua duoc do mong");
         }
         floorType = "go";
+        return *this;
     }
 
-    void buildRooms() override {
+    HouseBuilder& buildRooms() override {
         if (foundationType == "") {
             throw logic_error("Nha chua duoc do mong");
         }
@@ -173,9 +183,10 @@ public:
             throw logic_error("Nha chua duoc dung tuong");
         }
         rooms = 4;
+        return *this;
     }
 
-    void buildWindows() override {
+    HouseBuilder& buildWindows() override {
         if (foundationType == "") {
             throw logic_error("Nha chua duoc do mong");
         }
@@ -183,9 +194,10 @@ public:
             throw logic_error("Nha chua duoc dung tuong");
         }
         windows = 8;
+        return *this;
     }
 
-    void buildRoof() override {
+    HouseBuilder& buildRoof() override {
         if (foundationType == "") {
             throw logic_error("Nha chua duoc do mong");
         }
@@ -193,23 +205,43 @@ public:
             throw logic_error("Nha chua duoc dung tuong");
         }
         roofType = "ngoi";
+        return *this;
     }
 
-    void buildPool() override {
+    HouseBuilder& buildPool() override {
         hasPool = true;
+        return *this;
     }
 
-    void buildGarden() override {
+    HouseBuilder& buildGarden() override {
         hasGarden = true;
+        return *this;
     }
 
-    void buildGarage() override {
+    HouseBuilder& buildGarage() override {
         hasGarage = true;
+        return *this;
     }
 
     // Hàm trả hàng riêng của đội thợ hồ: Trả về House
     House build() {
+        validate();
         return House(foundationType, wallType, floorType, rooms, windows, roofType, hasPool, hasGarden, hasGarage);
+    }
+
+    void validate() {
+        if (foundationType == "") {
+            throw logic_error("Nha chua duoc do mong");
+        }
+        if (wallType == "") {
+            throw logic_error("Nha chua duoc dung tuong");
+        }
+        if (floorType == "") {
+            throw logic_error("Nha chua duoc lat san");
+        }
+        if (roofType == "") {
+            throw logic_error("Nha chua duoc lop mai");
+        }
     }
 };
 
@@ -227,60 +259,70 @@ private:
 public:
     EstimatorBuilder() : tonsOfCement(0), tonsOfMetal(0), numBricks(0), numTiles(0), m3OfWood(0), m2OfGlass(0) {}
 
-    void Reset() override {
+    EstimatorBuilder& Reset() override {
         tonsOfCement = 0;
         tonsOfMetal = 0;
         numBricks = 0;
         numTiles = 0;
         m3OfWood = 0;
         m2OfGlass = 0;
+        return *this;
     }
 
-    void buildFoundation() override {
+    EstimatorBuilder& buildFoundation() override {
         tonsOfCement += 2;
         tonsOfMetal += 2;
+        return *this;
     }
 
-    void buildWalls() override {
+    EstimatorBuilder& buildWalls() override {
         tonsOfCement += 2;
         numBricks += 5000;
+        return *this;
     }
 
-    void buildFloor() override {
+    EstimatorBuilder& buildFloor() override {
         tonsOfCement += 2;
         numTiles += 500;
         m3OfWood += 100;
+        return *this;
     }
 
-    void buildRooms() override {
+    EstimatorBuilder& buildRooms() override {
         tonsOfCement += 5;
         numBricks += 5000;
+        return *this;
     }
 
-    void buildWindows() override {
+    EstimatorBuilder& buildWindows() override {
         tonsOfMetal += 1;
         m2OfGlass += 1000;
+        return *this;
     }
 
-    void buildRoof() override {
+    EstimatorBuilder& buildRoof() override {
         numBricks += 1000;
         m3OfWood += 50;
+        return *this;
     }
 
-    void buildPool() override {
+    EstimatorBuilder& buildPool() override {
         numTiles += 500;
         tonsOfCement += 10;
+        return *this;
     }
 
-    void buildGarden() override {
+    EstimatorBuilder& buildGarden() override {
         m3OfWood += 10;
         tonsOfMetal += 1;
+        return *this;
     }
 
-    void buildGarage() override {
+    EstimatorBuilder& buildGarage() override {
         tonsOfCement += 10;
         tonsOfMetal += 5;
         numBricks += 2000;
+        return *this;
     }
 
     // Hàm trả hàng riêng của đội dự toán: Trả về Construction Report
@@ -302,15 +344,15 @@ public:
 
         cout << "Cai thau: Bat dau quy trinh xay Biet Thu..." << endl;
 
-        builder.buildFoundation();
-        builder.buildWalls();
-        builder.buildFloor();
-        builder.buildRooms();
-        builder.buildWindows();
-        builder.buildRoof();
-        builder.buildPool();
-        builder.buildGarden();
-        builder.buildGarage();
+        builder.buildFoundation()
+               .buildWalls()
+               .buildFloor()
+               .buildRooms()
+               .buildWindows()
+               .buildRoof()
+               .buildPool()
+               .buildGarden()
+               .buildGarage();
 
         cout << "Cai thau: Quy trinh hoan tat. Toi di ve day!" << endl;
     }
@@ -350,6 +392,19 @@ int main() {
     }
     catch (const exception& e) {
         cout << "KE HOACH THAT BAI: " << e.what() << endl;
+    }
+
+    cout << endl;
+
+    // Chủ nhà tự xây nhà mà không cần phải qua tay ông thầu
+    cout << "KICH BAN C: Chu nha tu xay nha (Khong thue cai thau)" << endl;
+    try {
+        HouseBuilder clientBuilder;
+        House h = clientBuilder.buildFoundation().buildWalls().buildRoof().buildFloor().build();
+        h.showHouse();
+    }
+    catch (const exception& e) {
+        cout << "KE HOACH THAT BAI: " << e.what();
     }
 
     return 0;
