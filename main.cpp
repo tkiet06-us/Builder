@@ -40,7 +40,6 @@ private:
 
 public:
     void showHouse() {
-#pragma 
         cout << "   [Ket qua: Ban da nhan duoc ngoi nha]:" << endl;
         cout << "    - Da hoan thien: Do mong loai " << foundationType << endl;
         cout << "    - Da hoan thien: Tuong loai bang " << wallType << endl;
