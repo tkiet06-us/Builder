@@ -219,6 +219,7 @@ public:
         return House(foundationType, wallType, floorType, rooms, windows, roofType, hasPool, hasGarden, hasGarage);
     }
 
+    // Kiểm tra logic trước khi xây một căn nhà hoàn chỉnh 
     void validate() {
         if (foundationType == "") {
             throw logic_error("Nha chua duoc do mong");
