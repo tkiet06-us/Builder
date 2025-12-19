@@ -10,13 +10,7 @@ using namespace std;
 // 1. PRODUCT (Sản phẩm đầu ra)
 // Là một sản phẩm cụ thể
 
-// "nếu được có thể cho chung class House với Construction Report chung 1 slide"
-// "Constructor dài quá thì m ghi ví dụ như "House(...)" là được"
-
 // A. Ngôi nhà thật 
-
-
-
 class House {
 private:
     string foundationType;
@@ -32,6 +26,9 @@ private:
     bool hasGarden;
     bool hasGarage;
 
+    // Constructor của Product được set trong private
+    // --> Chỉ được tạo đối tượng từ builder
+    // --> Thêm hàm bạn Concrete Builder để nó có thể tạo sản phẩm thông qua constructor này
     friend class HouseBuilder;
 
     House(string foundation, string wall, string floor, int room, int window, string roof, bool pool, bool garden, bool garage) :
@@ -39,6 +36,7 @@ private:
     }
 
 public:
+    // Trình bày sản phẩm: Hiển thị ngôi nhà hoàn chỉnh - các phần đã hoàn thành
     void showHouse() {
         cout << "   [Ket qua: Ban da nhan duoc ngoi nha]:" << endl;
         cout << "    - Da hoan thien: Do mong loai " << foundationType << endl;
@@ -77,6 +75,7 @@ private:
     }
 
 public:
+    // Trình bày sản phẩm: Hiển thị báo cáo dự toán nguyên vật liệu
     void showReport() {
         cout << "   [Ket qua: Bao cao du toan vat lieu]:" << endl;
         cout << "    - Xi mang da dung: " << tonsOfCement << " tan" << endl;
@@ -89,8 +88,6 @@ public:
     }
 };
 
-// "Slide code 2"
-
 // 2. BUILDER INTERFACE (Giao diện builder)
 // Cung cấp tất cả bước chung xây dựng nên 1 product
 
@@ -100,11 +97,10 @@ public:
     virtual Builder& Reset() = 0;
 
     // Các bước xây nhà
-    // "chỉ cần ghi chú chức năng của 3 hàm build đầu là được"
     virtual Builder& buildFoundation() = 0; // đổ móng
     virtual Builder& buildWalls() = 0;      // xây tường
     virtual Builder& buildFloor() = 0;      // lát sàn
-    virtual Builder& buildRooms() = 0;
+    virtual Builder& buildRooms() = 0;      // xây phòng
     virtual Builder& buildWindows() = 0;
     virtual Builder& buildRoof() = 0;
     virtual Builder& buildPool() = 0;
@@ -112,12 +108,7 @@ public:
     virtual Builder& buildGarage() = 0;
 };
 
-// "Slide code 3"
-
 // 3. CONCRETE BUILDER (Các đội thợ cụ thể)
-
-// "nếu được có thể cho chung class HouseBuilder với EstimatorBuilder chung 1 slide"
-// "Nhiều hàm build quá thì lấy 3 cái làm mẫu thôi"
 
 // ĐỘI 1: Đội Thợ Hồ (HouseBuilder) -> Tạo ra House
 class HouseBuilder : public Builder {
@@ -138,6 +129,7 @@ private:
 public:
     HouseBuilder() : rooms(0), windows(0), hasPool(false), hasGarden(false), hasGarage(false) {}
 
+    // Reset được dùng khi builder muốn tạo sản phẩm mới
     HouseBuilder& Reset() override {
         foundationType = "";
         wallType = "";
@@ -151,6 +143,7 @@ public:
         return *this;
     }
 
+    // Implement các hàm build bộ phận
     HouseBuilder& buildFoundation() override {
         foundationType = "don";
         return *this;
@@ -330,7 +323,6 @@ public:
 
 
 // 4. DIRECTOR (Cai thầu / Quản lý dự án)
-// "Slide code 4"
 // Người này nắm quy trình chuẩn để xây một căn biệt thự.
 // Không quan tâm đội thợ bên dưới là thợ hồ hay kế toán.
 
@@ -356,7 +348,6 @@ public:
 };
 
 // 5. CLIENT (Chủ nhà)
-// "Slide code 5"
 int main() {
     // Thuê ông Cai thầu (Director)
     ConstructionManager manager;
