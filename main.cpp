@@ -352,12 +352,13 @@ public:
 int main() {
     // Thuê ông Cai thầu (Director)
     ConstructionManager manager;
+    HouseBuilder workerTeam;
+    EstimatorBuilder accountantTeam;
 
     // Xây một căn nhà do ông thầu chỉ đạo
     cout << "KICH BAN A: Muon xay biet thu de o (Thue doi Tho Ho)" << endl;
 
     try {
-        HouseBuilder workerTeam;
         manager.ConstructVilla(workerTeam);
         House myDreamHouse = workerTeam.build();
 
@@ -373,7 +374,6 @@ int main() {
     cout << "KICH BAN B: Muon bao gia du toan (Thue doi Ke toan)" << endl;
 
     try {
-        EstimatorBuilder accountantTeam;
         manager.ConstructVilla(accountantTeam);
         ConstructionReport report = accountantTeam.build();
 
